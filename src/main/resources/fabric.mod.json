@@ -1,0 +1,43 @@
+{
+    "schemaVersion": 1,
+    "id": "mod-template",
+    "version": "${version}",
+    "name": "Mod Template",
+    "description": "Mod Template...",
+    "authors": [
+        {
+            "name": "Faremir",
+            "contact": {
+                "email": "1363005+Faremir@users.noreply.github.com",
+                "homepage": "https://github.com/Faremir"
+            }
+        }
+    ],
+    "contact": {
+        "homepage": "https://github.com/Faremir/MinecraftModTemplate/issues",
+        "sources": "https://github.com/Faremir/MinecraftModTemplate"
+    },
+    "license": "Polyform-Shield-1.0.0",
+    "icon": "assets/mod-template/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "io.github.faremir.modtemplate.ModTemplate"
+        ],
+        "modmenu": [
+            "io.github.faremir.modtemplate.client.ModTemplateModMenu"
+        ]
+    },
+    "mixins": [
+        "mod-template.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${loader_version}",
+        "minecraft": "~${minecraft_version}",
+        "java": ">=25",
+        "fabric-api": "*"
+    },
+    "suggests": {
+        "modmenu": "*"
+    }
+}

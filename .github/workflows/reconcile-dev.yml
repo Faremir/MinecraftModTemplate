@@ -1,0 +1,49 @@
+name: Rebase dev onto stable
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - 'stable/**'
+
+permissions:
+  contents: write
+
+jobs:
+  rebase:
+    if: >
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'feature/')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+            client-id: ${{ vars.APP_CLIENT_ID }}
+            private-key: ${{ secrets.APP_PRIVATE_KEY }}
+            owner: ${{ github.repository_owner }}
+            repositories: ${{ github.event.repository.name }}
+            permission-contents: write
+
+      - name: Configure Git
+        run: |
+          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+          git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+          gh auth setup-git
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Rebase dev
+        run: |
+          git fetch origin dev "${{ github.event.pull_request.base.ref }}"
+
+          git switch dev
+          git rebase "origin/${{ github.event.pull_request.base.ref }}"
+
+          git push --force-with-lease origin dev
